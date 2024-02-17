@@ -16,38 +16,6 @@ const Search = () => {
   const handleLookupChange = (event) => {
     setLookup(event.target.value);
   };
-
-  const gatherStockData = async (stockSymbol) => {
-
-    if (
-      stockSymbol === undefined ||
-      stockSymbol === null ||
-      stockSymbol === ""
-    ) {
-      alert("Blank stocks ain't cool!");
-      return;
-    }
-    setIsLoading(true)
-    const response = await axios
-      .get("/gatherStockData/", {
-        params: {
-          stockSymbol: stockSymbol,
-        },
-
-      })
-      .catch((error) => {
-        console.log("Error occurred: " + error.toJSON());
-        setIsLoading(false)
-        alert("Fake stocks ain't cool!")
-      });
-
-    if (response) {
-      setResults(response.data);
-      setLookup("")
-      setIsLoading(false)
-      return response;
-    }
-  };
   
   const getChartResponse = async (stockSymbol) => {
 
@@ -64,8 +32,8 @@ const Search = () => {
       .get("/getChartResponse/", {
         params: {
           ticker: stockSymbol,
-          period: "1d",
-          interval: "1m"
+          period: "5y",
+          interval: "1d"
         },
 
       })
@@ -76,12 +44,11 @@ const Search = () => {
       });
 
     if (response) {
-      setResults(response.data);
+      setResults(response.data.chartResponse);
       setLookup("")
       setIsLoading(false)
 
-      console.log(response)
-      console.log(response.data.chartResponse.meta)
+      console.log(response.data.chartResponse)
       return response;
     }
   };
@@ -92,7 +59,7 @@ const Search = () => {
     <div className={containerClass}>
       <div className="searchTitleAndForm">
         <div className="searchTitle">find a stock:</div>
-        <form className="searchForm" onSubmit={(e) => { e.preventDefault(); gatherStockData(lookup) }}>
+        <form className="searchForm" onSubmit={(e) => { e.preventDefault(); getChartResponse(lookup) }}>
           <input
             className="searchFormInput"
             placeholder="SYMBOL"
@@ -112,7 +79,6 @@ const Search = () => {
               " to django backend for data fetching."
             );
             setResultType('canvasjs')
-            // gatherStockData(lookup);
             getChartResponse(lookup);
           }}
         >Search CanvasJS</div>
@@ -125,7 +91,7 @@ const Search = () => {
               " to django backend for data fetching."
             );
             setResultType('d3')
-            gatherStockData(lookup);
+            getChartResponse(lookup);
           }}
         >Search d3</div>
         <div
@@ -138,8 +104,8 @@ const Search = () => {
     </div>
   ) : results ? (
     <div className="results">
-      {resultsType == 'canvasjs' ? <GraphMetricsCanvas stockMetrics={results} /> 
-        : resultsType == 'd3' ? <GraphMetricsD3 stockMetrics={results} /> : 'major poo poo alert!'}
+      {resultsType == 'canvasjs' ? <GraphMetricsCanvas results={results} /> 
+        : resultsType == 'd3' ? <GraphMetricsD3 results={results} /> : 'major poo poo alert!'}
       <div className="searchButtonsContainer">
         <div
           className="SearchButton"

@@ -1,19 +1,22 @@
 import React, { useRef, useEffect, useReducer, useState } from "react";
 import * as d3 from "d3";
 
-const GraphMetricsD3 = ({ stockMetrics }) => {
+const GraphMetricsD3 = ({ results }) => {
   const ref = useRef()
 
-  const stockSymbol = stockMetrics["stockSymbol"]
-  const metrics = stockMetrics["metrics"]
-  const stockData = metrics.map((metric, i) => {
+  const stockSymbol = results.meta.symbol
+
+  const metrics = results.indicators
+  const dateKey = metrics[0]["Datetime"] ? "Datetime" : "Date"
+
+  const stockData = metrics.map((metric) => {
     return {
-      date: new Date(metric[i]["Date"]),
-      close: parseFloat(metric[i]["Close"]),
-      open: parseFloat(metric[i]["open"]),
-      high: parseFloat(metric[i]["high"]),
-      low: parseFloat(metric[i]["low"]),
-      volume: parseFloat(metric[i]["volume"]),
+      date: new Date(metric[dateKey]),
+      close: parseFloat(metric["Close"]),
+      open: parseFloat(metric["Open"]),
+      high: parseFloat(metric["High"]),
+      low: parseFloat(metric["Low"]),
+      volume: parseFloat(metric["Volume"]),
     }
   }).slice(1000, 1100)
 

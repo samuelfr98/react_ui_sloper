@@ -6,13 +6,13 @@ const GraphMetricsCanvas = ({ results }) => {
   const CanvasJS = CanvasJSReact.CanvasJS
   const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart
 
-  console.log("Inside graph metrics canvas: " + results)
-
   const stockSymbol = results.meta.symbol
 
   const metrics = results.indicators
+  const dateKey = metrics[0]["Datetime"] ? "Datetime" : "Date"
 
-  const pairs = metrics.map((metric, i) => { return { x: new Date(metric[i]['Datetime']), y: parseFloat(metric[i]['Close']) } })
+
+  const pairs = metrics.map((metric) => { return { x: new Date(metric[dateKey]), y: parseFloat(metric['Close']) } })
 
   const options = {
     theme: "dark1",

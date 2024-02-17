@@ -2,14 +2,17 @@ import React from 'react'
 import CanvasJSReact from '@canvasjs/react-stockcharts';
 
 
-const GraphMetricsCanvas = ({ stockMetrics }) => {
+const GraphMetricsCanvas = ({ results }) => {
   const CanvasJS = CanvasJSReact.CanvasJS
   const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart
 
-  const stockSymbol = stockMetrics["stockSymbol"]
-  const metrics = stockMetrics["metrics"]
+  console.log("Inside graph metrics canvas: " + results)
 
-  const pairs = metrics.map((metric, i) => { return { x: new Date(metric[i]['Date']), y: parseFloat(metric[i]['Close']) } })
+  const stockSymbol = results.meta.symbol
+
+  const metrics = results.indicators
+
+  const pairs = metrics.map((metric, i) => { return { x: new Date(metric[i]['Datetime']), y: parseFloat(metric[i]['Close']) } })
 
   const options = {
     theme: "dark1",

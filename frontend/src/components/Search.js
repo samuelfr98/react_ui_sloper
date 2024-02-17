@@ -48,6 +48,43 @@ const Search = () => {
       return response;
     }
   };
+  
+  const getChartResponse = async (stockSymbol) => {
+
+    if (
+      stockSymbol === undefined ||
+      stockSymbol === null ||
+      stockSymbol === ""
+    ) {
+      alert("Blank stocks ain't cool!");
+      return;
+    }
+    setIsLoading(true)
+    const response = await axios
+      .get("/getChartResponse/", {
+        params: {
+          ticker: stockSymbol,
+          period: "1d",
+          interval: "1m"
+        },
+
+      })
+      .catch((error) => {
+        console.log("Error occurred: " + error.toJSON());
+        setIsLoading(false)
+        alert("Fake stocks ain't cool!")
+      });
+
+    if (response) {
+      setResults(response.data);
+      setLookup("")
+      setIsLoading(false)
+
+      console.log(response)
+      console.log(response.data.chartResponse.meta)
+      return response;
+    }
+  };
 
   const containerClass = isLoading ? "searchDivLoadingResults" : "searchDiv"
 
@@ -75,7 +112,8 @@ const Search = () => {
               " to django backend for data fetching."
             );
             setResultType('canvasjs')
-            gatherStockData(lookup);
+            // gatherStockData(lookup);
+            getChartResponse(lookup);
           }}
         >Search CanvasJS</div>
         <div
